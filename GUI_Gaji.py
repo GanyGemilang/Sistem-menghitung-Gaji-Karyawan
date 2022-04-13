@@ -7,7 +7,7 @@ try:
     main_window = tkinter.Tk()
     main_window.title("Sistem Menghitung Gaji Karyawan")
     # tidak bisa di atur screen
-    #main_window.resizable(0,0)
+    main_window.resizable(0,0)
 
     #Posisi screen di tengah
     widthscreen= main_window.winfo_screenwidth()
@@ -48,7 +48,7 @@ try:
     #Resiko Kerja
     ResikoKerja = tkinter.StringVar(main_window)
     ResikoKerja.set("Click Me") # default value
-    w = tkinter.OptionMenu(main_window, ResikoKerja, "Risiko sangat rendah", "Risiko rendah", "Risiko sedang", "Risiko tinggi", "Risiko sangat tinggi")
+    w = tkinter.OptionMenu(main_window, ResikoKerja, "Resiko Sangat Rendah", "Resiko Rendah", "Resiko Sedang", "Resiko Tinggi", "Resiko Sangat Tinggi")
     w.place(x=144, y=120)
 
     #Status Perkawinan
@@ -77,13 +77,6 @@ try:
                     onvalue = 1, offvalue = 0, height=0, \
                     width = 0)
     C5.place(x=495, y=150)
-    # C5 = tkinter.Label(main_window, text="*Pilih Salah Satu", width=0)
-    # C5.place(x=435, y=150)
-    # C5.config(bg="yellow")
-    # status = tkinter.StringVar(main_window)
-    # status.set("Click Me") # default value
-    # w = tkinter.OptionMenu(main_window, status, "Belum Kawin", "Kawin", "Kawin + Istri/Suami", "Janda", "Duda")
-    # w.place(x=144, y=150)
 
 
     # Jumlah Anak

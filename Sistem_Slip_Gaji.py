@@ -72,13 +72,13 @@ try:
             tunjangan_karyawan = 0
             if(label1.get() != ""):
                 tunjangan_karyawan += int(dataTunjangan1.get())
-            elif(label2.get() != ""):
+            if(label2.get() != ""):
                 tunjangan_karyawan += int(dataTunjangan2.get())
-            elif(label3.get() != ""):
+            if(label3.get() != ""):
                 tunjangan_karyawan += int(dataTunjangan3.get())
-            elif(label4.get() != ""):
+            if(label4.get() != ""):
                 tunjangan_karyawan += int(dataTunjangan4.get())
-            elif(label5.get() != ""):
+            if(label5.get() != ""):
                 tunjangan_karyawan += int(dataTunjangan5.get())
             
             # Menghitung PTKP
@@ -99,9 +99,17 @@ try:
                 PTKP += 375000*3
 
             # Logic Menghitung Gaji
-            print(gaji_karyawan, tunjangan_karyawan, PTKP, resikokerja_karyawan)
-            #return
-
+            print(tunjangan_karyawan)
+            Hitung = Hitung_Gaji(gaji_karyawan,tunjangan_karyawan,PTKP,resikokerja_karyawan)
+            jkk_p = Hitung.Hitung_BPJS_TK1()
+            jht_p = Hitung.Hitung_BPJS_TK2()
+            kes_p = Hitung.Hitung_BPJS_Kes1()
+            kes_k = Hitung.Hitung_BPJS_Kes2()
+            jht_k = Hitung.Hitung_BPJS_TK3()
+            total_penghasilan = Hitung.Total_Penghasilan(round(jkk_p), round(jht_p), round(kes_p))
+            pajak = Hitung.Hitung_PPh21(kes_k,jht_k)
+            total_potongan = Hitung.Total_Potongan(kes_k,jht_k,pajak, jkk_p, jht_p, kes_p)
+            total_gaji = Hitung.Total_Gaji(total_penghasilan,total_potongan)
 
             periode         = "Periode " + date1 + " - " + date2
             namakaryawan    = "Nama karyawan    : " + nama_karyawan
@@ -109,17 +117,15 @@ try:
             resiko          = "Resiko Kerja     : " + resikokerja_karyawan
             matauang        = "Mata Uang        : IDR"
             Gaji_pokok      = "         Gaji Pokok                       " + rupiah_format(float(gaji_karyawan))
-            #Tunjangan_text  = "         Tunjangan {}                     "
-            JKK_JKM         = "         Tunjangan BPJS TK (JKK+JKM)      "
-            JHT_JP          = "         Tunjangan BPJS TK (JHT+JP)       "
-            BPJS_Kes        = "         Tunjangan BPJS Kesehatan         "
-            Tot_penghasilan = "         Total Penghasilan                "
-            JKK_JKM_2       = "         Potongan BPJS TK (JKK+JKM)       "
-            JHT_JP_2        = "         Potongan BPJS TK (JHT+JP)        "
-            BPJS_Kes_2      = "         Potongan BPJS Kesehatan          "
-            pph21           = "         Potongan PPH21                   "
-            Tot_potongan    = "         Total Potongan                   "
-            Tot_gaji        = "Total Gaji                                "
+            JKK_JKM         = "         Tunjangan BPJS TK (JKK+JKM)      " + rupiah_format(float(jkk_p))
+            JHT_JP          = "         Tunjangan BPJS TK (JHT+JP)       " + rupiah_format(float(jht_p))
+            BPJS_Kes        = "         Tunjangan BPJS Kesehatan         " + rupiah_format(float(kes_p))
+            Tot_penghasilan = "         Total Penghasilan                " + rupiah_format(float(total_penghasilan))
+            JHT_JP_2        = "         Potongan BPJS TK (JHT+JP)        " + rupiah_format(float(jht_k))
+            BPJS_Kes_2      = "         Potongan BPJS Kesehatan          " + rupiah_format(float(kes_k))
+            pph21           = "         Potongan PPH21                   " + rupiah_format(float(pajak))
+            Tot_potongan    = "         Total Potongan                   " + rupiah_format(float(total_potongan))
+            Tot_gaji        = "Total Gaji                                " + rupiah_format(float(total_gaji))
 
             pdf = FPDF()
             pdf.add_page()
@@ -137,19 +143,54 @@ try:
             pdf.cell(200, 5, txt="", ln=1, align="L")
             pdf.cell(200, 5, txt= Gaji_pokok, ln=1, align="L")
             if(label1.get() != ""):
-                Tunjangan1  = "         Tunjangan {}                  ".format(label1.get()) + rupiah_format(float(dataTunjangan1.get()))
+                if len(label1.get()) <= 6:
+                    Tunjangan1  = "         Tunjangan {}                  ".format(label1.get()) + rupiah_format(float(dataTunjangan1.get()))
+                elif len(label1.get()) <= 8:
+                    Tunjangan1  = "         Tunjangan {}                ".format(label1.get()) + rupiah_format(float(dataTunjangan1.get()))
+                elif len(label1.get()) <= 10:
+                    Tunjangan1  = "         Tunjangan {}             ".format(label1.get()) + rupiah_format(float(dataTunjangan1.get()))
+                else:
+                    Tunjangan1  = "         Tunjangan {}           ".format(label1.get()) + rupiah_format(float(dataTunjangan1.get()))
                 pdf.cell(200, 5, txt= Tunjangan1, ln=1, align="L")
             if(label2.get() != ""):
-                Tunjangan2  = "         Tunjangan {}                   ".format(label2.get()) + rupiah_format(float(dataTunjangan2.get()))
+                if len(label2.get()) <= 6:
+                    Tunjangan2  = "         Tunjangan {}                  ".format(label2.get()) + rupiah_format(float(dataTunjangan2.get()))
+                elif len(label2.get()) <= 8:
+                    Tunjangan2  = "         Tunjangan {}                ".format(label2.get()) + rupiah_format(float(dataTunjangan2.get()))
+                elif len(label2.get()) <= 10:
+                    Tunjangan2  = "         Tunjangan {}             ".format(label2.get()) + rupiah_format(float(dataTunjangan2.get()))
+                else:
+                    Tunjangan2  = "         Tunjangan {}           ".format(label2.get()) + rupiah_format(float(dataTunjangan2.get()))
                 pdf.cell(200, 5, txt= Tunjangan2, ln=1, align="L")
             if(label3.get() != ""):
-                Tunjangan3  = "         Tunjangan {}                 ".format(label3.get()) + rupiah_format(float(dataTunjangan3.get()))
+                if len(label3.get()) <= 6:
+                    Tunjangan3  = "         Tunjangan {}                  ".format(label3.get()) + rupiah_format(float(dataTunjangan3.get()))
+                elif len(label3.get()) <= 8:
+                    Tunjangan3  = "         Tunjangan {}                ".format(label3.get()) + rupiah_format(float(dataTunjangan3.get()))
+                elif len(label3.get()) <= 10:
+                    Tunjangan3  = "         Tunjangan {}             ".format(label3.get()) + rupiah_format(float(dataTunjangan3.get()))
+                else:
+                    Tunjangan3  = "         Tunjangan {}           ".format(label3.get()) + rupiah_format(float(dataTunjangan3.get()))
                 pdf.cell(200, 5, txt= Tunjangan3, ln=1, align="L")
             if(label4.get() != ""):
-                Tunjangan4  = "         Tunjangan {}                 ".format(label4.get()) + rupiah_format(float(dataTunjangan4.get()))
+                if len(label4.get()) <= 6:
+                    Tunjangan4  = "         Tunjangan {}                  ".format(label4.get()) + rupiah_format(float(dataTunjangan4.get()))
+                elif len(label4.get()) <= 8:
+                    Tunjangan4  = "         Tunjangan {}                ".format(label4.get()) + rupiah_format(float(dataTunjangan4.get()))
+                elif len(label4.get()) <= 10:
+                    Tunjangan4  = "2        Tunjangan {}             ".format(label4.get()) + rupiah_format(float(dataTunjangan4.get()))
+                else:
+                    Tunjangan4  = "         Tunjangan {}           ".format(label4.get()) + rupiah_format(float(dataTunjangan4.get()))
                 pdf.cell(200, 5, txt= Tunjangan4, ln=1, align="L")
             if(label5.get() != ""):
-                Tunjangan5  = "         Tunjangan {}                 ".format(label5.get()) + rupiah_format(float(dataTunjangan5.get()))
+                if len(label5.get()) <= 6:
+                    Tunjangan5  = "         Tunjangan {}                  ".format(label5.get()) + rupiah_format(float(dataTunjangan5.get()))
+                elif len(label5.get()) <= 8:
+                    Tunjangan5  = "         Tunjangan {}                ".format(label5.get()) + rupiah_format(float(dataTunjangan5.get()))
+                elif len(label5.get()) <= 10:
+                    Tunjangan5  = "2        Tunjangan {}             ".format(label5.get()) + rupiah_format(float(dataTunjangan5.get()))
+                else:
+                    Tunjangan5  = "         Tunjangan {}           ".format(label5.get()) + rupiah_format(float(dataTunjangan5.get()))
                 pdf.cell(200, 5, txt= Tunjangan5, ln=1, align="L")
 
             pdf.cell(200, 5, txt= JKK_JKM, ln=1, align="L")
@@ -160,9 +201,9 @@ try:
             pdf.cell(200, 5, txt="", ln=1, align="L")
             pdf.cell(200, 5, txt="Potongan", ln=1, align="L")
             pdf.cell(200, 5, txt="", ln=1, align="L")
-            pdf.cell(200, 5, txt= JKK_JKM_2, ln=1, align="L")
             pdf.cell(200, 5, txt= JHT_JP_2, ln=1, align="L")
             pdf.cell(200, 5, txt= BPJS_Kes_2, ln=1, align="L")
+            pdf.cell(200, 5, txt= pph21, ln=1, align="L")
             pdf.cell(200, 5, txt= JKK_JKM, ln=1, align="L")
             pdf.cell(200, 5, txt= JHT_JP, ln=1, align="L")
             pdf.cell(200, 5, txt= BPJS_Kes, ln=1, align="L")
@@ -173,7 +214,7 @@ try:
 
 
             today = date.today()
-            file            = "E:\Belajar Coding\Python PRO\Tugas Akhir\Data\Slip_Gaji_"+ nama_karyawan.replace(" ", "_")+today.strftime("_%d_%m_%Y") +".pdf"
+            file            = "E:\Belajar Coding\Python PRO\Tugas Akhir\Sistem-menghitung-Gaji-Karyawan\Data\Slip_Gaji_"+ nama_karyawan.replace(" ", "_")+today.strftime("_%d_%m_%Y") +".pdf"
             pdf.output(file, 'F')
             messagebox.showinfo(title="Selamat!!!", message="Anda Berhasil Cetak Slip Gaji Karyawan" )
             # Refresh Form
